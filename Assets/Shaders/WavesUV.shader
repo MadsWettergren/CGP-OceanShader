@@ -1,19 +1,32 @@
 Shader "Custom/WavesUV" {
 	Properties {
+		//Color of the Ocean
 		_Color ("Color", Color) = (1,1,1,1)
+		//Main texture (albedo)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		[NoScaleOffset] _FlowMap ("Flow (RG, A noise)", 2D) = "black"{}
-		[NoScaleOffset] _DerivHeightMap ("Deriv (AG) Height (B)", 2D) = "black" {}
+		//Flow Map
+		[NoScaleOffset] _FlowMap ("FlowMap (RG, A noise)", 2D) = "black"{}
+		//Height Map
+		[NoScaleOffset] _DerivHeightMap ("DerivHeightMap (AG) Height (B)", 2D) = "black" {}
+		//Offsetting the UV to make the animation to change over time.
 		_UJump("U jump per phase", Range(-.25, .25)) = .25
 		_VJump("V jump per phase", Range(-.25, .25)) = .25
+		//Tiling the distorted texture
 		_Tiling("Tiling", Float) = 1
+		//Animation speed for the distorted texture
 		_Speed("Speed", Float) = 1
+		//Strength of the flow, which is determined by the flow map
 		_FlowStrength("Flow Strenght", Float) = 1
+		//Offset of the flow animation
 		_FlowOffset("Flow Offset", Float) = 0
+		//Scale the height of the small waves
 		_HeightScale("Height Scale, Constant", Float) = .25
+		//Height scaled based on flow strenght
 		_HeightScaleModulated("Height Scale, Modulated", Float) = .75
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Metallic ("Metallic", Range(0,1)) = 0.0
+		//Vectors for the big waves, which controls the direction,
+		//steepness and wavelenght. Can add as many waves as you want.
 		_WaveA("Wave A(dir, steepness, wavelength)", Vector) = (1, 0, .5, 10)
 		_WaveB("Wave B(dir, steepness, wavelength)", Vector) = (0, 1, .25, 20)
 		_WaveC("Wave B(dir, steepness, wavelength)", Vector) = (1, 1, .15, 10)
@@ -56,9 +69,8 @@ Shader "Custom/WavesUV" {
 			binormal += float3( -d.x * d.y * (steepness * sin(f)), d.y * (steepness * cos(f)), 1 - d.y * d.y * (steepness * sin(f)));
 			
 			return float3(d.x * (a * cos(f)), a * sin(f), d.y * (a *cos(f)));
-
 		}
-
+		//Adjusting verticies
 		void vert(inout appdata_full vertexData) {
 			float3 gridPoint = vertexData.vertex.xyz;
 			float3 tangent = float3(1, 0, 0);
