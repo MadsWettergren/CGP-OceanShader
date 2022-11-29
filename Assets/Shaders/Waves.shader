@@ -55,7 +55,7 @@ Shader "Custom/WavesUV" {
 		fixed4 _Color;
 		float4 _WaveA, _WaveB, _WaveC;
 
-		float3 GerstnerWave(float4 wave, float3 p, inout float3 tangent, inout float3 binormal)
+		float3 TrochoidalWave(float4 wave, float3 p, inout float3 tangent, inout float3 binormal)
 		{
 			float steepness = wave.z;
 			float wavelength = wave.w;
@@ -76,9 +76,9 @@ Shader "Custom/WavesUV" {
 			float3 tangent = float3(1, 0, 0);
 			float3 binormal = float3(0, 0, 1);
 			float3 p = gridPoint;
-			p += GerstnerWave(_WaveA, gridPoint, tangent, binormal);
-			p += GerstnerWave(_WaveB, gridPoint, tangent, binormal);
-			p += GerstnerWave(_WaveC, gridPoint, tangent, binormal);
+			p += TrochoidalWave(_WaveA, gridPoint, tangent, binormal);
+			p += TrochoidalWave(_WaveB, gridPoint, tangent, binormal);
+			p += TrochoidalWave(_WaveC, gridPoint, tangent, binormal);
 			float3 normal = normalize(cross(binormal, tangent));
 			vertexData.vertex.xyz = p;
 			vertexData.normal = normal;
