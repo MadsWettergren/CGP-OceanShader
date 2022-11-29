@@ -1,5 +1,5 @@
 # CGP-Mini-project
-![Visual](Images/Screenshot.png)
+![Visual](Images/Screenshot.PNG)
 
 The miniproject presents an ocean shader, with a number of distortions which can be applied to the mesh of a plane.
 
