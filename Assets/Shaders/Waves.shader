@@ -83,7 +83,7 @@ Shader "Custom/WavesUV" {
 			vertexData.vertex.xyz = p;
 			vertexData.normal = normal;
 		}
-
+		//Taking the data from HightMap and returning it as a float3
 		float3 UnpackDerivativeHeight(float4 textureData)
 		{
 			float3 dh = textureData.agb;
