@@ -25,6 +25,7 @@ The shader contains a number of properties which can be changed manually or by c
 
 1. Clone the repository.
 2. Open with Unity (made with unity version 2020.3.32f1)
+3. Open the 'Scenes' folder and choose 'OceanScene'.
 
 Then to change the ocean:
 1. Go to the materials folder.

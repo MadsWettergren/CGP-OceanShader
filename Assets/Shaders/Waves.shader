@@ -55,6 +55,8 @@ Shader "Custom/WavesUV" {
 		fixed4 _Color;
 		float4 _WaveA, _WaveB, _WaveC;
 
+		//Takes wave settings and original gridpoint. Has input/output for the tangent and binormal
+		//Returns its point offset.
 		float3 TrochoidalWave(float4 wave, float3 p, inout float3 tangent, inout float3 binormal)
 		{
 			float steepness = wave.z;
@@ -76,6 +78,7 @@ Shader "Custom/WavesUV" {
 			float3 tangent = float3(1, 0, 0);
 			float3 binormal = float3(0, 0, 1);
 			float3 p = gridPoint;
+			//Adding the waves from the properties
 			p += TrochoidalWave(_WaveA, gridPoint, tangent, binormal);
 			p += TrochoidalWave(_WaveB, gridPoint, tangent, binormal);
 			p += TrochoidalWave(_WaveC, gridPoint, tangent, binormal);
@@ -83,14 +86,15 @@ Shader "Custom/WavesUV" {
 			vertexData.vertex.xyz = p;
 			vertexData.normal = normal;
 		}
-		//Taking the data from HightMap and returning it as a float3
+		//Taking the data from HightMap, puts the correct data channels in a float vector
+		//and decodes derivatives
 		float3 UnpackDerivativeHeight(float4 textureData)
 		{
 			float3 dh = textureData.agb;
 			dh.xy = dh.xy * 2 - 1;
 			return dh;
 		}
-
+		//Animating UV
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			float3 flow = tex2D(_FlowMap, IN.uv_MainTex).rgb;
 			flow.xy = flow.xy * 2 - 1;
