@@ -7,7 +7,7 @@ Shader "Custom/WavesUV" {
 		//Flow Map
 		[NoScaleOffset] _FlowMap ("FlowMap (RG, A noise)", 2D) = "black"{}
 		//Height Map
-		[NoScaleOffset] _DerivHeightMap ("DerivHeightMap (AG) Height (B)", 2D) = "black" {}
+		[NoScaleOffset] _NormalMap ("Normals", 2D) = "bump" {}
 		//Offsetting the UV to make the animation to change over time.
 		_UJump("U jump per phase", Range(-.25, .25)) = .25
 		_VJump("V jump per phase", Range(-.25, .25)) = .25
@@ -42,7 +42,7 @@ Shader "Custom/WavesUV" {
 
 		#include "Flow.cginc"
 
-		sampler2D _MainTex, _FlowMap, _DerivHeightMap;
+		sampler2D _MainTex, _FlowMap, _NormalMap;
 		float _UJump, _VJump, _Tiling, _Speed, _FlowStrength, _FlowOffset;
 		float _HeightScale, _HeightScaleModulated;
 
@@ -86,14 +86,6 @@ Shader "Custom/WavesUV" {
 			vertexData.vertex.xyz = p;
 			vertexData.normal = normal;
 		}
-		//Taking the data from HightMap, puts the correct data channels in a float vector
-		//and decodes derivatives
-		float3 UnpackDerivativeHeight(float4 textureData)
-		{
-			float3 dh = textureData.agb;
-			dh.xy = dh.xy * 2 - 1;
-			return dh;
-		}
 		//Animating UV
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			float3 flow = tex2D(_FlowMap, IN.uv_MainTex).rgb;
@@ -109,9 +101,9 @@ Shader "Custom/WavesUV" {
 
 			float finalHeightScale = length(flow.z) * _HeightScaleModulated + _HeightScale;
 
-			float3 dhA = UnpackDerivativeHeight(tex2D(_DerivHeightMap, uvwA.xy)) * (uvwA.z * finalHeightScale);
-			float3 dhB = UnpackDerivativeHeight(tex2D(_DerivHeightMap, uvwB.xy)) * (uvwB.z * finalHeightScale);
-			o.Normal = normalize(float3(-(dhA.xy + dhB.xy), 1));
+			float3 normalA = UnpackNormal(tex2D(_NormalMap, uvwA.xy)) * uvwA.z;
+			float3 normalB = UnpackNormal(tex2D(_NormalMap, uvwB.xy)) * uvwB.z;
+			o.Normal = normalize(normalA + normalB);
 
 			fixed4 texA = tex2D(_MainTex, uvwA.xy) * uvwA.z;
 			fixed4 texB = tex2D(_MainTex, uvwB.xy) * uvwB.z;
