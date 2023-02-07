@@ -19,10 +19,6 @@ Shader "Custom/WavesUV" {
 		_FlowStrength("Flow Strenght", Float) = 1
 		//Offset of the flow animation
 		_FlowOffset("Flow Offset", Float) = 0
-		//Scale the height of the small waves
-		_HeightScale("Height Scale, Constant", Float) = .25
-		//Height scaled based on flow strenght
-		_HeightScaleModulated("Height Scale, Modulated", Float) = .75
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		//Vectors for the big waves, which controls the direction,
@@ -98,8 +94,6 @@ Shader "Custom/WavesUV" {
 
 			float3 uvwA = FlowUVW(IN.uv_MainTex, flow.xy, jump, _FlowOffset, _Tiling, time, false);
 			float3 uvwB = FlowUVW(IN.uv_MainTex, flow.xy, jump, _FlowOffset, _Tiling, time, true);
-
-			float finalHeightScale = length(flow.z) * _HeightScaleModulated + _HeightScale;
 
 			float3 normalA = UnpackNormal(tex2D(_NormalMap, uvwA.xy)) * uvwA.z;
 			float3 normalB = UnpackNormal(tex2D(_NormalMap, uvwB.xy)) * uvwB.z;
